@@ -1,0 +1,83 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JukeBox Privacy Policy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-blue-600 text-white py-6">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold">JukeBox Privacy Policy</h1>
+        </div>
+    </header>
+    <main class="container mx-auto px-4 py-8">
+        <section class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold mb-4">Privacy Policy</h2>
+            <p class="text-gray-700 mb-4">
+                At JukeBox, we prioritize your privacy. This policy explains how we collect, use, and protect your data.
+            </p>
+            <h3 class="text-xl font-semibold mb-2">Data Collection</h3>
+            <p class="text-gray-700 mb-4">
+                JukeBox collects your name, Apple Music preferences, and song choices to enable group music sessions. 
+                This data is stored securely via Firebase and used only to facilitate app functionality.
+            </p>
+            <h3 class="text-xl font-semibold mb-2">Data Usage</h3>
+            <p class="text-gray-700 mb-4">
+                Your data is used to display room details, manage song host transitions, and enhance your experience. 
+                We do not share your data with third parties except as required for app services (e.g., Apple Music).
+            </p>
+            <h3 class="text-xl font-semibold mb-2">Contact Us</h3>
+            <p class="text-gray-700">
+                For questions about your data, email us at 
+                <a href="mailto:support@jukeboxapp.com" class="text-blue-600 hover:underline">support@jukeboxapp.com</a>.
+            </p>
+        </section>
+    </main>
+    <footer class="bg-gray-800 text-white py-4">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2025 JukeBox. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
