@@ -1,83 +1,94 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JukeBox Privacy Policy</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JukeBox – Privacy Policy</title>
+  <meta name="description" content="JukeBox Privacy Policy: what we collect, how we use it, and how to contact us." />
+  <style>
+    :root { --brand:#2563eb; --bg:#f7f7fb; --text:#111827; --muted:#6b7280; --card:#ffffff; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+    a{color:var(--brand);text-decoration:none} a:hover{text-decoration:underline}
+    header{background:var(--brand);color:#fff}
+    .container{max-width:960px;margin:0 auto;padding:0 16px}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+    .nav a{color:#fff;margin-left:16px;opacity:.95} .nav a:hover{opacity:1;text-decoration:underline}
+    main{padding:24px 0}
+    .card{background:var(--card);border-radius:12px;padding:18px;border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    h1,h2{margin-top:0}
+    footer{background:#111827;color:#fff;margin-top:24px}
+    footer .inner{padding:16px 0;text-align:center;font-size:14px;opacity:.9}
+  </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <header class="bg-blue-600 text-white py-6">
-        <div class="container mx-auto px-4">
-            <h1 class="text-3xl font-bold">JukeBox Privacy Policy</h1>
-        </div>
-    </header>
-    <main class="container mx-auto px-4 py-8">
-        <section class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-semibold mb-4">Privacy Policy</h2>
-            <p class="text-gray-700 mb-4">
-                At JukeBox, we prioritize your privacy. This policy explains how we collect, use, and protect your data.
-            </p>
-            <h3 class="text-xl font-semibold mb-2">Data Collection</h3>
-            <p class="text-gray-700 mb-4">
-                JukeBox collects your name, Apple Music preferences, and song choices to enable group music sessions. 
-                This data is stored securely via Firebase and used only to facilitate app functionality.
-            </p>
-            <h3 class="text-xl font-semibold mb-2">Data Usage</h3>
-            <p class="text-gray-700 mb-4">
-                Your data is used to display room details, manage song host transitions, and enhance your experience. 
-                We do not share your data with third parties except as required for app services (e.g., Apple Music).
-            </p>
-            <h3 class="text-xl font-semibold mb-2">Contact Us</h3>
-            <p class="text-gray-700">
-                For questions about your data, email us at 
-                <a href="mailto:JukeBoxSongSync@gmail.com" class="text-blue-600 hover:underline">JukeBoxSongSync@gmail.com</a>.
-            </p>
-        </section>
-    </main>
-    <footer class="bg-gray-800 text-white py-4">
-        <div class="container mx-auto px-4 text-center">
-            <p>© 2025 JukeBox. All rights reserved.</p>
-        </div>
-    </footer>
+<body>
+  <header>
+    <div class="container nav">
+      <div><strong>JukeBox</strong></div>
+      <nav>
+        <a href="./">Home</a>
+        <a href="how-to.html">How&nbsp;To</a>
+        <a href="support.html">Support</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Privacy Policy</h1>
+    <p style="color:var(--muted);margin-top:-8px">Last updated: October 30, 2025</p>
+
+    <section class="card" style="margin-top:16px;">
+      <h2>Overview</h2>
+      <p>
+        JukeBox respects your privacy. This page explains what information we collect, how we use it, and your choices.
+      </p>
+    </section>
+
+    <section class="card" style="margin-top:16px;">
+      <h2>Information We Collect</h2>
+      <ul>
+        <li>Basic app usage data (e.g., events like creating a room or joining a session).</li>
+        <li>Apple Music–related permissions you grant to enable playback during group sessions.</li>
+      </ul>
+    </section>
+
+    <section class="card" style="margin-top:16px;">
+      <h2>How We Use Information</h2>
+      <ul>
+        <li>Operate core features such as creating rooms and turn-based playback.</li>
+        <li>Improve reliability and troubleshoot issues.</li>
+      </ul>
+    </section>
+
+    <section class="card" style="margin-top:16px;">
+      <h2>Data Sharing</h2>
+      <p>
+        We do not sell your personal data. We may share minimal data with service providers only to operate the app
+        (for example, analytics or error reporting), under appropriate safeguards.
+      </p>
+    </section>
+
+    <section class="card" style="margin-top:16px;">
+      <h2>Your Choices</h2>
+      <ul>
+        <li>You can revoke Apple Music permissions at any time in iOS Settings.</li>
+        <li>You can request deletion of support correspondence at any time.</li>
+      </ul>
+    </section>
+
+    <section class="card" style="margin-top:16px;">
+      <h2>Contact</h2>
+      <p>
+        Questions? Email <a href="mailto:jukeboxsongsync@gmail.com">jukeboxsongsync@gmail.com</a>.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container inner">
+      <p>&copy; 2025 JukeBox. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>
