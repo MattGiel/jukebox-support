@@ -1,83 +1,89 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JukeBox Support</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JukeBox – Support</title>
+  <meta name="description" content="Contact JukeBox support and find answers to common questions." />
+  <style>
+    :root { --brand:#2563eb; --bg:#f7f7fb; --text:#111827; --muted:#6b7280; --card:#ffffff; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+    a{color:var(--brand);text-decoration:none} a:hover{text-decoration:underline}
+    header{background:var(--brand);color:#fff}
+    .container{max-width:960px;margin:0 auto;padding:0 16px}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+    .nav a{color:#fff;margin-left:16px;opacity:.95} .nav a:hover{opacity:1;text-decoration:underline}
+    main{padding:24px 0}
+    .card{background:var(--card);border-radius:12px;padding:18px;border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    .grid{display:grid;gap:16px;grid-template-columns:1fr}
+    @media (min-width: 900px){ .grid{grid-template-columns:1fr 1fr} }
+    footer{background:#111827;color:#fff;margin-top:24px}
+    footer .inner{padding:16px 0;text-align:center;font-size:14px;opacity:.9}
+  </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <header class="bg-blue-600 text-white py-6">
-        <div class="container mx-auto px-4">
-            <h1 class="text-3xl font-bold">JukeBox Support</h1>
+<body>
+  <header>
+    <div class="container nav">
+      <div><strong>JukeBox</strong></div>
+      <nav>
+        <a href="./">Home</a>
+        <a href="how-to.html">How&nbsp;To</a>
+        <a href="support.html">Support</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 style="margin:0 0 12px;">Support</h1>
+    <p style="color:var(--muted);margin-top:0">We’re here to help. Try the How To guide or contact us directly.</p>
+
+    <section class="grid" style="margin-top:16px;">
+      <article class="card">
+        <h2 style="margin-top:0;">Contact</h2>
+        <p>Email: <a href="mailto:jukeboxsongsync@gmail.com">jukeboxsongsync@gmail.com</a></p>
+        <p>We usually reply within a business day.</p>
+      </article>
+
+      <article class="card">
+        <h2 style="margin-top:0;">Quick Links</h2>
+        <ul style="margin:0 0 0 18px;">
+          <li><a href="how-to.html">How To (setup & tips)</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="./">Home</a></li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top:16px;">
+      <h2 style="margin-top:0;">Common Issues</h2>
+      <details>
+        <summary>No audio or playback stalls</summary>
+        <div>
+          <ul>
+            <li>Ensure your Apple Music subscription is active and volume isn’t muted.</li>
+            <li>Close other streaming apps and re-open JukeBox.</li>
+            <li>Rejoin the room if you were in a Group Session.</li>
+          </ul>
         </div>
-    </header>
-    <main class="container mx-auto px-4 py-8">
-        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Welcome to JukeBox</h2>
-            <p class="text-gray-700">
-                JukeBox is a social music app that lets you create and join music rooms with friends using Apple Music. 
-                Share songs, take turns as the song host, and enjoy seamless group sessions.
-            </p>
-        </section>
-        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Get Help</h2>
-            <p class="text-gray-700 mb-4">
-                Need assistance with creating rooms, joining sessions, or playing music? Contact us at:
-            </p>
-            <a href="mailto:support@jukeboxapp.com" class="text-blue-600 hover:underline">support@jukeboxapp.com</a>
-        </section>
-        <section class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-semibold mb-4">Privacy Policy</h2>
-            <p class="text-gray-700">
-                We value your privacy. Read our <a href="/privacy" class="text-blue-600 hover:underline">Privacy Policy</a> 
-                to understand how we handle your data, including names and song choices stored via Firebase.
-            </p>
-        </section>
-    </main>
-    <footer class="bg-gray-800 text-white py-4">
-        <div class="container mx-auto px-4 text-center">
-            <p>&copy; 2025 JukeBox. All rights reserved.</p>
+      </details>
+      <details>
+        <summary>Can’t join a room</summary>
+        <div>
+          <ul>
+            <li>Double-check the room name/code shared by the host.</li>
+            <li>Verify internet connection (Wi-Fi or cellular).</li>
+          </ul>
         </div>
-    </footer>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container inner">
+      <p>&copy; 2025 JukeBox. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>
